@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<head>
+    <title>Traffic Light</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="main.css">
+	
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+	<!-- jQuery library -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+	<!-- Latest compiled JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <font id="title">Traffic Light</font><p><br>
+
+    <div id="content" class="row">
+		<img src="images/red.png" id="traffic_light" alt="Traffic Light">
+    </div>
+
+    <script>	
+		var button;
+
+        // cpf setup
+        function setup()
+        {
+            if(cpf)
+            {
+                cpf.setPinMode('["resetPin"],["grove_newChainableLED", 7, 8, 3]');
+            }	            
+        }
+        
+        function loop() 
+        {
+            setTimeout(go, 5000);          // Wait 20 secs then turn-on Go light                     
+        }		
+
+        function go()
+        {
+            if(cpf)
+            {		                
+                cpf.request('["grove_setColorRGB", 0, 0, 0, 0]');       // Turn-off Stop light
+				cpf.request('["grove_setColorRGB", 2, 0, 255, 0]');     // Turn-on Go light
+                setUiLight("green");
+
+                setTimeout(warning, 5000);     // Wait 15 secs then turn-on Warning light
+            }  
+        }
+
+        function warning()
+        {
+            if(cpf)
+            {	                
+                cpf.request('["grove_setColorRGB", 2, 0, 0, 0]');	    // Turn-off Go light
+				cpf.request('["grove_setColorRGB", 1, 255, 255, 0]');   // Turn-on Warning light
+                setUiLight("yellow");
+
+                setTimeout(stop, 1000);         // Wait 2 secs then turn-on Stop light
+            }
+        }
+
+        function stop()
+        {
+            if(cpf)
+            {	                
+                cpf.request('["grove_setColorRGB", 1, 0, 0, 0]');	    // Turn-off Warning light
+				cpf.request('["grove_setColorRGB", 0, 255, 0, 0]');     // Turn-on Stop light
+                setUiLight("red");
+
+                setTimeout(loop, 1);
+            }
+        }		
+
+        function setUiLight(color)
+        {
+            var traffic_light = document.getElementById("traffic_light");
+            traffic_light.src = "images/" + color + ".png";
+        }
+
+        setup();
+
+        loop();        
+    </script>
+</body>
+</html>
